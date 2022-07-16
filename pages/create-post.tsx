@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react' // new
+import { useState, useRef, useEffect, ReactElement, MutableRefObject } from 'react' // new
 import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic'
 import { css } from '@emotion/css'
@@ -6,14 +6,13 @@ import { ethers } from 'ethers'
 import { create } from 'ipfs-http-client'
 
 /* import contract address and contract owner address */
-import {
-  contractAddress
-} from '../config'
+import { contractAddress } from '../config';
 
 import Blog from '../artifacts/contracts/Blog.sol/Blog.json'
 
 /* define the ipfs endpoint */
-const client = create('https://ipfs.infura.io:5001/api/v0')
+//@ts-ignore
+const client = create('https://ipfs.infura.io:5001/api/v0');
 
 /* configure the markdown editor to be client-side import */
 const SimpleMDE = dynamic(
@@ -23,13 +22,13 @@ const SimpleMDE = dynamic(
 
 const initialState = { title: '', content: '' }
 
-function CreatePost() {
+function CreatePost(): ReactElement {
   /* configure initial state to be used in the component */
   const [post, setPost] = useState(initialState)
   const [image, setImage] = useState(null)
   const [loaded, setLoaded] = useState(false)
 
-  const fileRef = useRef(null)
+  const fileRef: MutableRefObject<HTMLInputElement | null> = useRef(null);
   const { title, content } = post
   const router = useRouter()
 
@@ -40,7 +39,7 @@ function CreatePost() {
     }, 500)
   }, [])
 
-  function onChange(e) {
+  function onChange(e: any) {
     setPost(() => ({ ...post, [e.target.name]: e.target.value }))
   }
 
@@ -62,7 +61,7 @@ function CreatePost() {
     }
   }
 
-  async function savePost(hash) {
+  async function savePost(hash: any) {
     /* anchor post to smart contract */
     if (typeof window.ethereum !== 'undefined') {
       const provider = new ethers.providers.Web3Provider(window.ethereum)
@@ -80,12 +79,12 @@ function CreatePost() {
     }
   }
 
-  function triggerOnChange() {
+  function triggerOnChange(): void {
     /* trigger handleFileChange handler of hidden file input */
-    fileRef.current.click()
+    fileRef.current?.click();
   }
 
-  async function handleFileChange (e) {
+  async function handleFileChange (e: any): Promise<void> {
     /* upload cover image to ipfs and save hash to state */
     const uploadedFile = e.target.files[0]
     if (!uploadedFile) return

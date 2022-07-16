@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, ReactElement } from 'react'
 import { useRouter } from 'next/router'
 import ReactMarkdown from 'react-markdown'
 import { css } from '@emotion/css'
@@ -12,6 +12,7 @@ import {
 import Blog from '../../artifacts/contracts/Blog.sol/Blog.json'
 
 const ipfsURI = 'https://ipfs.io/ipfs/'
+//@ts-ignore
 const client = create('https://ipfs.infura.io:5001/api/v0')
 
 const SimpleMDE = dynamic(
@@ -19,8 +20,8 @@ const SimpleMDE = dynamic(
   { ssr: false }
 )
 
-export default function Post() {
-  const [post, setPost] = useState(null)
+export default function Post(): ReactElement | null {
+  const [post, setPost]: any | null = useState(null)
   const [editing, setEditing] = useState(true)
   const router = useRouter()
   const { id } = router.query
@@ -28,7 +29,7 @@ export default function Post() {
   useEffect(() => {
     fetchPost()
   }, [id])
-  async function fetchPost() {
+  async function fetchPost(): Promise<void> {
     /* we first fetch the individual post by ipfs hash from the network */
     if (!id) return
     let provider
@@ -57,25 +58,27 @@ export default function Post() {
     setPost(data)
   }
 
-  async function savePostToIpfs() {
+  async function savePostToIpfs(): Promise<string | undefined> {
     try {
       const added = await client.add(JSON.stringify(post))
-      return added.path
+      return added.path;
     } catch (err) {
       console.log('error: ', err)
     }
   }
 
-  async function updatePost() {
+  async function updatePost(): Promise<void> {
     const hash = await savePostToIpfs()
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     const signer = provider.getSigner()
     const contract = new ethers.Contract(contractAddress, Blog.abi, signer)
-    await contract.updatePost(post.id, post.title, hash, true)
+    await contract.updatePost(post?.id, post?.title, hash, true)
     router.push('/')
   }
 
-  if (!post) return null
+  if (!post) {
+    return null;
+  }
 
   return (
     <div className={container}>

@@ -1,5 +1,5 @@
 import { css } from '@emotion/css'
-import { useContext } from 'react'
+import { ReactElement, useContext } from 'react'
 import { useRouter } from 'next/router'
 import { ethers } from 'ethers'
 import Link from 'next/link'
@@ -13,7 +13,7 @@ import {
 /* import Application Binary Interface (ABI) */
 import Blog from '../artifacts/contracts/Blog.sol/Blog.json'
 
-export default function Home(props) {
+export default function Home(props: any): ReactElement {
   /* posts are fetched server side and passed in as props */
   /* see getServerSideProps */
   const { posts } = props
@@ -29,7 +29,7 @@ export default function Home(props) {
       <div className={postList}>
         {
           /* map over the posts array and render a button with the post title */
-          posts.map((post, index) => (
+          posts.map((post: any, index: number) => (
             <Link href={`/post/${post[2]}`} key={index}>
               <a>
                 <div className={linkStyle}>

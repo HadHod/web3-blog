@@ -1,5 +1,5 @@
 import '../styles/globals.css'
-import { useState } from 'react'
+import { ReactElement, useState } from 'react'
 import Link from 'next/link'
 import { css } from '@emotion/css'
 import { ethers } from 'ethers'
@@ -9,9 +9,9 @@ import { AccountContext } from '../context.js'
 import { ownerAddress } from '../config'
 import 'easymde/dist/easymde.min.css'
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps }: { Component: any, pageProps: any }): ReactElement {
   /* create local state to save account information after signin */
-  const [account, setAccount] = useState(null)
+  const [account, setAccount] = useState("");
   /* web3Modal configuration for enabling wallet access */
   async function getWeb3Modal() {
     const web3Modal = new Web3Modal({
@@ -29,7 +29,7 @@ function MyApp({ Component, pageProps }) {
   }
 
   /* the connect function uses web3 modal to connect to the user's wallet */
-  async function connect() {
+  async function connect(): Promise<void> {
     try {
       const web3Modal = await getWeb3Modal()
       const connection = await web3Modal.connect()

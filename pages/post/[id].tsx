@@ -1,5 +1,5 @@
-import ReactMarkdown from 'react-markdown'
-import { useContext } from 'react'
+import ReactMarkdown from 'react-markdown';
+import { ReactElement, useContext } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { css } from '@emotion/css'
@@ -14,7 +14,7 @@ import Blog from '../../artifacts/contracts/Blog.sol/Blog.json'
 
 const ipfsURI = 'https://ipfs.io/ipfs/'
 
-export default function Post({ post }) {
+export default function Post({ post }: { post: any }): ReactElement {
   const account = useContext(AccountContext)
   const router = useRouter()
   const { id } = router.query
@@ -62,7 +62,7 @@ export default function Post({ post }) {
 
 export async function getStaticPaths() {
   /* here we fetch the posts from the network */
-  let provider
+  let provider: any;
   if (process.env.ENVIRONMENT === 'local') {
     provider = new ethers.providers.JsonRpcProvider()
   } else if (process.env.ENVIRONMENT === 'testnet') {
@@ -77,7 +77,7 @@ export async function getStaticPaths() {
   /* then we map over the posts and create a params object passing */
   /* the id property to getStaticProps which will run for ever post */
   /* in the array and generate a new page */
-  const paths = data.map(d => ({ params: { id: d[2] } }))
+  const paths = data.map((d: any) => ({ params: { id: d[2] } }))
 
   return {
     paths,
@@ -85,7 +85,7 @@ export async function getStaticPaths() {
   }
 }
 
-export async function getStaticProps({ params }) {
+export async function getStaticProps({ params }: { params: any }) {
   /* using the id property passed in through the params object */
   /* we can us it to fetch the data from IPFS and pass the */
   /* post data into the page as props */
